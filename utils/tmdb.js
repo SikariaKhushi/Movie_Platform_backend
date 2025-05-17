@@ -1,5 +1,6 @@
 const axios = require('axios');
 const { POSTER_SIZES, TMDB_ENDPOINTS } = require('./constants');
+require('dotenv').config();
 
 /**
  * TMDB API helper functions
