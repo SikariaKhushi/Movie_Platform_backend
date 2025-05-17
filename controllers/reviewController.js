@@ -94,7 +94,7 @@ exports.deleteReview = asyncHandler(async (req, res) => {
     throw new ApiError('Not authorized to delete this review', 401);
   }
 
-  await review.remove();
+  await review.deleteOne();
 
   res.status(200).json({
     success: true,
