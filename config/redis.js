@@ -1,27 +1,36 @@
+// config/redis.js
 const { createClient } = require('redis');
 
-// Create Redis client
+// Get Redis URL with fallback
+const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
+
+// Configure TLS only for Render's Redis
+const tlsConfig = redisUrl.startsWith('rediss://') ? { 
+  tls: true,
+  servername: new URL(redisUrl).hostname 
+} : {};
+
 const redisClient = createClient({
-  url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
-  password: process.env.REDIS_PASSWORD || undefined
+  url: redisUrl,
+  socket: tlsConfig
 });
 
-// Handle Redis connection events
+// Connection handlers
 redisClient.on('connect', () => {
-  console.log('Redis client connected');
+  console.log(`Redis connected to: ${redisUrl.includes('render.com') ? 'Render' : 'Local'}`);
 });
 
 redisClient.on('error', (err) => {
-  console.log('Redis client error', err);
+  console.error('Redis error:', err.message);
 });
 
-// Connect to Redis when this module is imported
+// Connect with retries
 (async () => {
   try {
     await redisClient.connect();
+    console.log('Redis connection successful');
   } catch (error) {
-    console.error('Redis connection failed:', error);
-    // Continue even if Redis is not available
+    console.error('Redis connection failed:', error.message);
   }
 })();
 
