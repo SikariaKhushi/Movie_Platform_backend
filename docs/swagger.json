@@ -10,8 +10,12 @@
   },
   "servers": [
     {
+      "url": "https://movie-platform-backend-g35c.onrender.com",
+      "description": "Production Server"
+    },
+    {
       "url": "http://localhost:5000",
-      "description": "Development server"
+      "description": "Local Development Server"
     }
   ],
   "components": {
